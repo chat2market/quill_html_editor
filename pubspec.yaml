@@ -24,7 +24,7 @@ dependencies:
   uuid: ^4.5.1
   webview_flutter: ^4.10.0
   webview_flutter_android: ^4.1.0
-  webview_flutter_platform_interface: ^2.9.0
+  webview_flutter_platform_interface: ^2.10.0
   webview_flutter_wkwebview: ^3.16.3
 
 dev_dependencies:
