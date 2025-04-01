@@ -305,12 +305,10 @@ class _WebViewXState extends State<WebViewX> {
     final htmlElementView = SizedBox(
       width: widget.width,
       height: widget.height,
-      child: AbsorbPointer(
-        child: RepaintBoundary(
-          child: HtmlElementView(
-            key: widget.key,
-            viewType: iframeViewType,
-          ),
+      child: RepaintBoundary(
+        child: HtmlElementView(
+          key: widget.key,
+          viewType: iframeViewType,
         ),
       ),
     );
