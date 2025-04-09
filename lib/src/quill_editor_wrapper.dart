@@ -838,12 +838,7 @@ class QuillHtmlEditorState extends State<QuillHtmlEditor> {
               }
              })
               quillContainer.addEventListener('click', function() {
-                if($kIsWeb) {
-                  OnQuillClicked(0);
-                } else {
-                  OnQuillClicked.postMessage(0);
-                }
-                // quilleditor.focus(); // Set focus on the Quill editor
+                quilleditor.focus();
               });
               quillContainer.addEventListener('mousedown', function(event) {
                 event.stopPropagation();
