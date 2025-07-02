@@ -55,6 +55,7 @@ class QuillHtmlEditor extends StatefulWidget {
       color: Colors.black87,
       fontWeight: FontWeight.normal,
     ),
+    this.hasPopup = false,
   }) : super(key: controller._editorKey);
 
   /// [text] to set initial text to the editor, please use text
@@ -153,6 +154,9 @@ class QuillHtmlEditor extends StatefulWidget {
   /// **Note** due to limitations of flutter webview at the moment, focus doesn't launch the keyboard in mobile, however, it will set the cursor at the end on focus.
   final bool? autoFocus;
 
+  /// [hasPopup] whether the parent has a popup
+  final bool hasPopup;
+
   @override
   QuillHtmlEditorState createState() => QuillHtmlEditorState();
 }
@@ -176,6 +180,8 @@ class QuillHtmlEditorState extends State<QuillHtmlEditor> {
   late String _fontFamily;
   // late String _encodedStyle;
   bool _editorLoaded = false;
+  bool _isReady = false;
+
   @override
   initState() {
     _loadScripts = rootBundle.loadString(
@@ -193,6 +199,24 @@ class QuillHtmlEditorState extends State<QuillHtmlEditor> {
   void dispose() {
     _webviewController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(QuillHtmlEditor oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (_isReady) {
+      _handleParentPopupChange(widget.hasPopup);
+    }
+  }
+
+  void _handleParentPopupChange(bool hasPopup) {
+    if (hasPopup) {
+      _webviewController.setIgnoreAllGestures(true);
+      _unFocus();
+      setState(() {});
+    } else {
+      _webviewController.setIgnoreAllGestures(false);
+    }
   }
 
   @override
@@ -249,7 +273,9 @@ class QuillHtmlEditorState extends State<QuillHtmlEditor> {
           ignoreAllGestures: false,
           width: constraints.maxWidth,
           onWebViewCreated: (controller) {
+            _isReady = true;
             _webviewController = controller;
+            // _webviewController.setIgnoreAllGestures(value)
             Future.delayed(const Duration(milliseconds: 100)).then((value) {
               if (widget.text != null) {
                 _setHtmlTextToEditor(htmlText: widget.text!);
@@ -369,7 +395,7 @@ class QuillHtmlEditorState extends State<QuillHtmlEditor> {
             DartCallback(
               name: 'OnQuillClicked',
               callBack: (map) {
-                // print('DartCallback OnQuillClicked');
+                print('DartCallback OnQuillClicked');
                 _requestFocus();
                 // print('OnQuillClicked');
               },
@@ -377,7 +403,7 @@ class QuillHtmlEditorState extends State<QuillHtmlEditor> {
             DartCallback(
               name: 'OnMouseDown',
               callBack: (map) {
-                // print('DartCallback OnMouseDown');
+                print('DartCallback OnMouseDown');
                 FocusScope.of(context).unfocus();
                 // print('OnMouseDown');
               },
